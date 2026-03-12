@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -24,15 +24,24 @@ jobs:
       - name: Build Nuxt app
         run: npm run build
 
-      - name: Deploy to server
+      - name: Deploy .output to server
         uses: easingthemes/ssh-deploy@v5
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           SOURCE: '.output/'
-          TARGET: '/var/www/portfolio/.output/'
+          TARGET: '/var/www/cv/.output/'
           ARGS: '-rlgoDzvc --delete'
+
+      - name: Deploy ecosystem config
+        uses: easingthemes/ssh-deploy@v5
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+          REMOTE_USER: ${{ secrets.SERVER_USER }}
+          SOURCE: 'ecosystem.config.cjs'
+          TARGET: '/var/www/cv/'
 
       - name: Restart PM2
         uses: appleboy/ssh-action@v1
@@ -41,5 +50,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /var/www/portfolio
-            pm2 restart portfolio --update-env || pm2 start ecosystem.config.cjs
+            cd /var/www/cv
+            pm2 restart portfolio --update-env 2>/dev/null || pm2 start ecosystem.config.cjs
+            pm2 save
