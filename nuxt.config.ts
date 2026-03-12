@@ -16,15 +16,15 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: 'https://yourname.dev',
+    url: 'https://jamacoder.uz',
     name: 'Jamshid Raximov - Full Stack Developer',
     description: 'Full Stack Developer portfolio - building modern web applications',
-    defaultLocale: 'en',
+    defaultLocale: 'uz',
   },
 
   app: {
     head: {
-      htmlAttrs: { lang: 'en' },
+      htmlAttrs: { lang: 'uz' },
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
     },
